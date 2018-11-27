@@ -19,6 +19,7 @@ from ecommerce.extensions.api.v2.views import retirement as retirement_views
 from ecommerce.extensions.api.v2.views import sdn as sdn_views
 from ecommerce.extensions.api.v2.views import stockrecords as stockrecords_views
 from ecommerce.extensions.api.v2.views import vouchers as voucher_views
+from ecommerce.extensions.api.v2.views import assignmentemail as assignment_email
 from ecommerce.extensions.voucher.views import CouponReportCSVView
 
 ORDER_NUMBER_PATTERN = r'(?P<number>[-\w]+)'
@@ -86,6 +87,10 @@ ENTERPRISE_URLS = [
     url(r'^customers$', enterprise_views.EnterpriseCustomerViewSet.as_view(), name='enterprise_customers')
 ]
 
+ASSIGNMENT_EMAIL_URLS = [
+    url(r'^$', assignment_email.AssignmentEmail.as_view(), name='assignmentemail')
+]
+
 urlpatterns = [
     url(r'^baskets/', include(BASKET_URLS, namespace='baskets')),
     url(r'^checkout/', include(CHECKOUT_URLS, namespace='checkout')),
@@ -97,6 +102,7 @@ urlpatterns = [
     url(r'^refunds/', include(REFUND_URLS, namespace='refunds')),
     url(r'^retirement/', include(RETIREMENT_URLS, namespace='retirement')),
     url(r'^sdn/', include(SDN_URLS, namespace='sdn')),
+    url(r'^assignmentemail/', assignment_email.AssignmentEmail.as_view(), name='assignmentemail'),
 ]
 
 router = ExtendedSimpleRouter()
