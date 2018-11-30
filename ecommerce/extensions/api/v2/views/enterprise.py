@@ -73,27 +73,6 @@ class EnterpriseCouponViewSet(CouponViewSet):
             return EnterpriseCouponOverviewListSerializer
         return CouponSerializer
 
-    @list_route(methods=['get'])
-    def overview(self, request, enterprise_id):     # pylint: disable=unused-argument
-        """
-        Overview of Enterprise coupons.
-        Returns the following data:
-            - Coupon ID
-            - Coupon name.
-            - Max number of codes available (Maximum coupon usage).
-            - Number of codes.
-            - Redemption count.
-            - Valid from.
-            - Valid end.
-        """
-        enterprise_coupons = self.get_queryset()
-        page = self.paginate_queryset(enterprise_coupons)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(enterprise_coupons, many=True)
-        return Response(serializer.data)
-
     def validate_access_for_enterprise_switch(self, request_data):
         if not waffle.switch_is_active(ENTERPRISE_OFFERS_FOR_COUPONS_SWITCH):
             raise ValidationError('This endpoint will be available once the enterprise offers switch is on.')
@@ -196,3 +175,24 @@ class EnterpriseCouponViewSet(CouponViewSet):
 
         if coupon_was_migrated:
             super(EnterpriseCouponViewSet, self).update_range_data(request_data, vouchers)
+
+    @list_route(url_path=r'(?P<enterprise_id>.+)/overview')
+    def overview(self, request, enterprise_id):     # pylint: disable=unused-argument
+        """
+        Overview of Enterprise coupons.
+        Returns the following data:
+            - Coupon ID
+            - Coupon name.
+            - Max number of codes available (Maximum coupon usage).
+            - Number of codes.
+            - Redemption count.
+            - Valid from.
+            - Valid end.
+        """
+        enterprise_coupons = self.get_queryset()
+        page = self.paginate_queryset(enterprise_coupons)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(enterprise_coupons, many=True)
+        return Response(serializer.data)

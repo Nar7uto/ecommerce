@@ -383,7 +383,9 @@ class EnterpriseCouponViewSetTest(CouponMixin, DiscoveryTestMixin, DiscoveryMock
 
         overview_response = self.get_response_json(
             'GET',
-            reverse('api:v2:enterprise-coupon-overview-overview-list', kwargs={'enterprise_id': enterprise_id})
+            reverse('api:v2:enterprise-coupons-(?P<enterprise-id>.+)/overview-list',
+                kwargs={'enterprise_id': enterprise_id}
+            )
         )
 
         # Verify that we get correct number of results related enterprise id.
