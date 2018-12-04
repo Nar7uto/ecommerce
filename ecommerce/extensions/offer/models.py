@@ -449,4 +449,33 @@ class Condition(AbstractCondition):
     )
 
 
+class OfferAssignment(models.Model):
+    EMAIL_PENDING, ASSIGNED, REDEEMED, EMAIL_BOUNCED, REVOKED = (
+        'EMAIL_PENDING', 'ASSIGNED', 'REDEEMED', 'EMAIL_BOUNCED', 'REVOKED'
+    )
+    STATUS_CHOICES = (
+        (EMAIL_PENDING, _("Email to user pending.")),
+        (ASSIGNED, _("Code successfully assigned to user.")),
+        (REDEEMED, _("Code has been redeemed by user.")),
+        (EMAIL_BOUNCED, _("Email to user bounced.")),
+        (REVOKED, _("Code has been revoked for this user.")),
+    )
+
+    offer = models.ForeignKey('offer.ConditionalOffer')
+    code = models.CharField(max_length=128)
+    user_email = models.EmailField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.CharField(
+        max_length=255,
+        choices=STATUS_CHOICES,
+        default=EMAIL_PENDING,
+    )
+    voucher_application = models.ForeignKey(
+        'voucher.VoucherApplication',
+        null=True,
+        blank=True
+    )
+
+
 from oscar.apps.offer.models import *  # noqa isort:skip pylint: disable=wildcard-import,unused-wildcard-import,wrong-import-position,wrong-import-order,ungrouped-imports
